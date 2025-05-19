@@ -1,0 +1,118 @@
+/* Estilos gerais */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Ajustes para a navbar (Bootstrap já lida com a maior parte) */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Seção Principal (index.html) */
+.section-1 {
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #3c7cc5 0%, #6fa8dc 100%);
+    color: white;
+    text-align: center;
+}
+
+.section-1 h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.section-1 p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+/* Galeria de Livros (produtos.html) */
+.gallery .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.gallery .card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Formulário de Contato (index.html) */
+.section-5 {
+    padding: 40px 20px;
+    background-color: #e9ecef;
+}
+
+/* Chat (chat.html) */
+#chatMessages {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    padding: 15px;
+}
+
+#chatMessages .alert {
+    margin-bottom: 0.5rem;
+}
+
+/* Formulários de Login e Registro */
+.login-page, .registro-form {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.login-page .form, .registro-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.login-page input, .registro-form input, .registro-form button {
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.login-page button, .registro-form button {
+    background-color: #3c7cc5;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 1rem;
+}
+
+.login-page button:hover, .registro-form button:hover {
+    background-color: #2a5d9e;
+}
+
+/* Botões gerais */
+.btn-primary {
+    background-color: #3c7cc5;
+    border-color: #3c7cc5;
+}
+
+.btn-primary:hover {
+    background-color: #2a5d9e;
+    border-color: #2a5d9e;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .section-1 h1 {
+        font-size: 2rem;
+    }
+    .section-1 p {
+        font-size: 1rem;
+    }
+    .gallery .card-img-top {
+        height: 150px;
+    }
+}

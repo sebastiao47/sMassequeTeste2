@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca Virtual - Bem-vindo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Sobreposição com gradiente para melhor leitura */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 0;
+        }
+
+        .welcome-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn {
+            transition: background-color 0.3s ease;
+        }
+    </style>
+</head>
+<body class="font-sans relative">
+    <div class="welcome-card">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Bem-vindo à Biblioteca Virtual</h1>
+        <p class="text-gray-600 mb-6">Por favor, faça login ou crie uma conta para continuar.</p>
+        <div class="space-y-4">
+            <a href="login.html" class="block w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 btn">Fazer Login</a>
+            <a href="Registro.html" class="block w-full bg-green-500 text-white p-3 rounded-lg hover:bg-green-600 btn">Criar Conta</a>
+        </div>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>

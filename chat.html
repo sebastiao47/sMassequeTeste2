@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca Virtual - Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message-animation {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .typing-indicator span {
+            animation: pulse 1.5s infinite;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="bg-gray-800 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a class="text-xl font-bold" href="index.html">Biblioteca Virtual</a>
+            <button class="text-white md:hidden" type="button" id="navbarToggle">
+                <i class="fa fa-bars"></i>
+            </button>
+            <div class="hidden md:flex space-x-4" id="navbarNav">
+                <a class="hover:text-gray-300" href="index.html">Casa</a>
+                <a class="hover:text-gray-300" href="produtos.html">Livros</a>
+                <a class="text-gray-300 font-semibold" href="chat.html">Chat</a>
+                <a class="hover:text-gray-300" href="perfil.html">Perfil</a>
+                <a class="hover:text-gray-300" href="/api/logout">Sair</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Chat Area -->
+    <main class="flex-1 container mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
+        <!-- Sidebar -->
+        <aside class="w-full md:w-64 bg-white rounded-lg shadow-md p-4 h-fit">
+            <h2 class="font-bold text-lg mb-4 text-indigo-700">Informações do Chat</h2>
+            <div class="space-y-4">
+                <div>
+                    <h3 class="font-semibold text-gray-700">Bibliotecário Virtual</h3>
+                    <p class="text-sm text-gray-600">Posso responder a qualquer pergunta sobre a biblioteca e mais! Após 3 perguntas, você pode conversar com outros usuários online.</p>
+                </div>
+                <div class="border-t pt-4">
+                    <h3 class="font-semibold text-gray-700">Usuários Online</h3>
+                    <ul id="user-list" class="mt-2 space-y-1 text-sm text-gray-600">
+                        <li>Carregando...</li>
+                    </ul>
+                </div>
+                <div class="border-t pt-4">
+                    <h3 class="font-semibold text-gray-700">Comandos Úteis</h3>
+                    <ul class="mt-2 space-y-1 text-sm text-gray-600">
+                        <li><span class="font-mono bg-gray-100 px-1 rounded">/ajuda</span> - Mostra comandos</li>
+                        <li><span class="font-mono bg-gray-100 px-1 rounded">/livros</span> - Lista categorias</li>
+                        <li><span class="font-mono bg-gray-100 px-1 rounded">/horario</span> - Horário de funcionamento</li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Chat Container -->
+        <div class="flex-1 flex flex-col bg-white rounded-lg shadow-md overflow-hidden">
+            <!-- Messages -->
+            <div id="chat-messages" class="chat-messages flex-1 p-4 overflow-y-auto">
+                <div class="message-animation flex mb-4">
+                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-500 flex items-center justify-center text-white">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="ml-3">
+                        <div class="font-semibold text-gray-800">Bibliotecário Virtual</div>
+                        <div class="mt-1 text-sm text-gray-600 bg-gray-100 rounded-lg p-3 max-w-xs md:max-w-md">
+                            Olá! Sou o assistente virtual da Biblioteca Virtual. Posso responder a qualquer pergunta sobre nosso acervo, horários, serviços e muito mais! Após 3 perguntas, você pode conversar com outros usuários online. Como posso ajudar?
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">Agora</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div id="typing-indicator" class="typing-indicator px-4 py-2 hidden">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-white">
+                        <i class="fas fa-robot text-sm"></i>
+                    </div>
+                    <div class="ml-3 flex space-x-1">
+                        <span class="h-2 w-2 bg-indigo-500 rounded-full"></span>
+                        <span class="h-2 w-2 bg-indigo-500 rounded-full"></span>
+                        <span class="h-2 w-2 bg-indigo-500 rounded-full"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="border-t p-4 bg-gray-50">
+                <form id="message-form" class="flex space-x-2">
+                    <input 
+                        id="message-input" 
+                        type="text" 
+                        placeholder="Digite sua mensagem..." 
+                        class="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        autocomplete="off"
+                    >
+                    <button 
+                        type="submit" 
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full p-2 w-10 h-10 flex items-center justify-center transition-colors"
+                    >
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+                <div class="mt-2 text-xs text-gray-500 text-center">
+                    <span id="question-counter">Perguntas restantes: 3</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
